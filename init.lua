@@ -326,6 +326,33 @@ require('lazy').setup({
     },
   },
 
+  -- Harpoon
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+      harpoon:setup()
+
+      -- Basic keymaps
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():append()
+      end)
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end)
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set('n', '<C-p>', function()
+        harpoon:list():prev()
+      end)
+      vim.keymap.set('n', '<C-n>', function()
+        harpoon:list():next()
+      end)
+    end,
+  },
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -643,6 +670,8 @@ require('lazy').setup({
             },
           },
         },
+
+        -- omnisharp configuration
         omnisharp = {
           settings = {
             FormattingOptions = {
@@ -654,6 +683,38 @@ require('lazy').setup({
               EnableImportCompletion = true,
             },
           },
+        },
+
+        -- volar for vue
+        volar = {
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
+          init_options = {
+            languageFeatures = {
+              implementation = true,
+              references = true,
+              definition = true,
+              typeDefinition = true,
+              hover = true,
+              rename = true,
+              renameFileRefactoring = true,
+              signatureHelp = true,
+              codeAction = true,
+              completion = {
+                defaultTagNameCase = 'both',
+                defaultAttrNameCase = 'kebabCase',
+              },
+              documentHighlight = true,
+              documentLink = true,
+              workspaceSymbol = true,
+              codeLens = true,
+            },
+          },
+        },
+
+        -- ts
+        ['typescript-language-server'] = {
+
+          filetypes = { 'typescript', 'javascript', 'vue' },
         },
       }
 
@@ -674,6 +735,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'omnisharp',
+        'typescript-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -712,7 +774,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, vue = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -915,7 +977,22 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'javascript',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'vue',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
