@@ -353,6 +353,26 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'kdheepak/lazygit.nvim',
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'Open lazy git' },
+    },
+  },
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -653,8 +673,6 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
 
         lua_ls = {
           -- cmd = { ... },
@@ -685,37 +703,73 @@ require('lazy').setup({
           },
         },
 
-        -- volar for vue
-        volar = {
-          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
+        -- Vue 3
+        volar = {},
+        -- TypeScript
+        ts_ls = {
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
           init_options = {
-            languageFeatures = {
-              implementation = true,
-              references = true,
-              definition = true,
-              typeDefinition = true,
-              hover = true,
-              rename = true,
-              renameFileRefactoring = true,
-              signatureHelp = true,
-              codeAction = true,
-              completion = {
-                defaultTagNameCase = 'both',
-                defaultAttrNameCase = 'kebabCase',
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                languages = { 'vue' },
               },
-              documentHighlight = true,
-              documentLink = true,
-              workspaceSymbol = true,
-              codeLens = true,
             },
           },
         },
-
-        -- ts
-        ['typescript-language-server'] = {
-
-          filetypes = { 'typescript', 'javascript', 'vue' },
-        },
+        -- volar for vue
+        -- volar = {
+        --   filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
+        --   capabilities = capabilities,
+        --   init_options = {
+        --     typescript = {
+        --       -- Use the TypeScript server from Mason's path
+        --       tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
+        --     },
+        --     vue = {
+        --       hybridMode = true,
+        --     },
+        --     languageFeatures = {
+        --       hover = true,
+        --       diagnostics = true,
+        --     },
+        --     documentFeatures = {
+        --       selectionRange = true,
+        --       foldingRange = true,
+        --       linkedEditingRange = true,
+        --       documentSymbol = true,
+        --       documentColor = true,
+        --       documentFormatting = {
+        --         defaultPrintWidth = 100,
+        --       },
+        --     },
+        --   },
+        --   on_new_config = function(new_config, new_root_dir)
+        --     local package_json = vim.fs.find('package.json', { path = new_root_dir, upward = true })[1]
+        --     if package_json then
+        --       local package_data = vim.fn.json_decode(vim.fn.readfile(package_json))
+        --
+        --       -- Check dependencies, devDependencies, or peerDependencies
+        --       local vue_dep = (package_data.dependencies and package_data.dependencies['vue'])
+        --         or (package_data.devDependencies and package_data.devDependencies['vue'])
+        --         or (package_data.peerDependencies and package_data.peerDependencies['vue'])
+        --
+        --       if vue_dep and vue_dep:match '^2' then
+        --         new_config.init_options.vue = { version = 2 }
+        --       else
+        --         -- default to Vue 3 if no match or no vue key
+        --         new_config.init_options.vue = { version = 3 }
+        --       end
+        --     end
+        --
+        --     -- (Optional) Adjust TypeScript if needed
+        --     local tsdk_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
+        --     if tsdk_path then
+        --       new_config.init_options.typescript.tsdk = tsdk_path
+        --     end
+        --   end,
+        -- },
       }
 
       -- Ensure the servers and tools above are installed
@@ -735,7 +789,9 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'omnisharp',
+        'volar',
         'typescript-language-server',
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -980,6 +1036,7 @@ require('lazy').setup({
       ensure_installed = {
         'bash',
         'c',
+        'css',
         'diff',
         'html',
         'javascript',
