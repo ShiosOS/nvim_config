@@ -101,6 +101,8 @@ vim.g.have_nerd_font = true
 -- Word wrapping - no word wrap
 vim.opt.wrap = false
 
+vim.opt.sidescroll = 1
+
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -338,6 +340,44 @@ require('lazy').setup({
       vim.cmd.colorscheme 'dracula_pro_alucard'
       vim.cmd.hi 'Comment gui=none'
     end,
+  },
+  -- trouble
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
+      },
+    },
   },
 
   -- Harpoon
@@ -651,14 +691,14 @@ require('lazy').setup({
       })
 
       -- Change diagnostic symbols in the sign column (gutter)
-      -- if vim.g.have_nerd_font then
-      --   local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
-      --   local diagnostic_signs = {}
-      --   for type, icon in pairs(signs) do
-      --     diagnostic_signs[vim.diagnostic.severity[type]] = icon
-      --   end
-      --   vim.diagnostic.config { signs = { text = diagnostic_signs } }
-      -- end
+      if vim.g.have_nerd_font then
+        local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
+        local diagnostic_signs = {}
+        for type, icon in pairs(signs) do
+          diagnostic_signs[vim.diagnostic.severity[type]] = icon
+        end
+        vim.diagnostic.config { signs = { text = diagnostic_signs } }
+      end
 
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
@@ -703,7 +743,6 @@ require('lazy').setup({
           },
         },
 
-        -- omnisharp configuration
         omnisharp = {
           settings = {
             FormattingOptions = {
@@ -717,9 +756,7 @@ require('lazy').setup({
           },
         },
 
-        -- Vue 3
         volar = {},
-        -- TypeScript
         ts_ls = {
           filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
           init_options = {
@@ -732,58 +769,6 @@ require('lazy').setup({
             },
           },
         },
-        -- volar for vue
-        -- volar = {
-        --   filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
-        --   capabilities = capabilities,
-        --   init_options = {
-        --     typescript = {
-        --       -- Use the TypeScript server from Mason's path
-        --       tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
-        --     },
-        --     vue = {
-        --       hybridMode = true,
-        --     },
-        --     languageFeatures = {
-        --       hover = true,
-        --       diagnostics = true,
-        --     },
-        --     documentFeatures = {
-        --       selectionRange = true,
-        --       foldingRange = true,
-        --       linkedEditingRange = true,
-        --       documentSymbol = true,
-        --       documentColor = true,
-        --       documentFormatting = {
-        --         defaultPrintWidth = 100,
-        --       },
-        --     },
-        --   },
-        --   on_new_config = function(new_config, new_root_dir)
-        --     local package_json = vim.fs.find('package.json', { path = new_root_dir, upward = true })[1]
-        --     if package_json then
-        --       local package_data = vim.fn.json_decode(vim.fn.readfile(package_json))
-        --
-        --       -- Check dependencies, devDependencies, or peerDependencies
-        --       local vue_dep = (package_data.dependencies and package_data.dependencies['vue'])
-        --         or (package_data.devDependencies and package_data.devDependencies['vue'])
-        --         or (package_data.peerDependencies and package_data.peerDependencies['vue'])
-        --
-        --       if vue_dep and vue_dep:match '^2' then
-        --         new_config.init_options.vue = { version = 2 }
-        --       else
-        --         -- default to Vue 3 if no match or no vue key
-        --         new_config.init_options.vue = { version = 3 }
-        --       end
-        --     end
-        --
-        --     -- (Optional) Adjust TypeScript if needed
-        --     local tsdk_path = vim.fs.find('node_modules/typescript/lib', { path = new_root_dir, upward = true })[1]
-        --     if tsdk_path then
-        --       new_config.init_options.typescript.tsdk = tsdk_path
-        --     end
-        --   end,
-        -- },
       }
 
       -- Ensure the servers and tools above are installed
@@ -983,24 +968,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    -- 'folke/tokyonight.nvim',
-    -- priority = 1000, -- Make sure to load this before all the other start plugins.
-    -- init = function()
-    --   -- Load the colorscheme here.
-    --   -- Like many other themes, this one has different styles, and you could load
-    --   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    --   vim.cmd.colorscheme 'tokyonight-night'
-    --
-    --   -- You can configure highlights by doing something like:
-    --   vim.cmd.hi 'Comment gui=none'
-    -- end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1097,13 +1064,13 @@ require('lazy').setup({
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
