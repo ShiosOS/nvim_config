@@ -753,6 +753,7 @@ require('lazy').setup({
               EnableAnalyzersSupport = true,
               EnableImportCompletion = true,
             },
+            solution = 'C:/Users/JuliusWalton/source/repos/Cognito Forms',
           },
         },
 
@@ -829,7 +830,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, vue = true, typescript = true }
+        local disable_filetypes = { c = true, cs = true, csharp = true, cpp = true, vue = true, typescript = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
