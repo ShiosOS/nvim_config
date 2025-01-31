@@ -337,7 +337,7 @@ require('lazy').setup({
     priority = 1000,
     lazy = false,
     init = function()
-      vim.cmd.colorscheme 'dracula_pro_alucard'
+      vim.cmd.colorscheme 'dracula_pro_buffy'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -745,6 +745,9 @@ require('lazy').setup({
 
         omnisharp = {
           settings = {
+            completion = {
+              EnableImportCompletion = true,
+            },
             FormattingOptions = {
               EnableEditorConfigSupport = true,
               OrganizeImports = true,
@@ -753,7 +756,6 @@ require('lazy').setup({
               EnableAnalyzersSupport = true,
               EnableImportCompletion = true,
             },
-            solution = 'C:/Users/JuliusWalton/source/repos/Cognito Forms',
           },
         },
 
