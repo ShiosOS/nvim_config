@@ -100,6 +100,7 @@ vim.g.have_nerd_font = true
 
 -- Word wrapping - no word wrap
 vim.opt.wrap = false
+vim.opt.fixendofline = false
 
 vim.opt.sidescroll = 1
 
@@ -391,7 +392,7 @@ require('lazy').setup({
 
       -- Basic keymaps
       vim.keymap.set('n', '<leader>a', function()
-        harpoon:list():append()
+        harpoon:list():add()
       end)
       vim.keymap.set('n', '<C-e>', function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
@@ -832,7 +833,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cs = true, csharp = true, cpp = true, vue = true, typescript = true }
+        local disable_filetypes = { c = true, cs = true, csharp = true, cpp = true, vue = true, typescript = true, javascript = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -1009,6 +1010,7 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+      require('mini.tabline').setup()
     end,
   },
   { -- Highlight, edit, and navigate code
